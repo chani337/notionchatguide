@@ -1,332 +1,334 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TeachChain Mini Bot</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TeachChain Guide (Responsive Widget)</title>
 
-    :root{
-      --widget-h: 170px;
-      --header-h: 34px;
-      --input-h: 44px;
-      --radius: 14px;
+<!-- (선택) 폰트: Pretendard -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 
-      --brand: #0B7CC1;
-      --bg: #ffffff;
-      --panel: #f6f7fb;
-      --border: #e5e7eb;
-      --text: #111827;
-      --muted: #6b7280;
-    }
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:100%; height:100%; background:transparent; }
+  body{
+    font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
 
-    html, body {
-      width: 100%;
-      height: auto;
-      background: transparent;
-      overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-    }
+  /* 노션 임베드가 주는 크기 그대로 따라감 */
+  .widget {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    overflow: hidden;
+    border-radius: 18px;
+    container-type: inline-size; /* container query */
+  }
 
-    .stage {
-      width: 100%;
-      padding: 0;
-      background: transparent;
-    }
+  .guide-card {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e6edf7;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+  }
 
-    #chat-container {
-      width: 100%;
-      height: var(--widget-h);
-      display: flex;
-      flex-direction: column;
+  /* Header */
+  .guide-header {
+    background: #eaf2ff;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #dfe9fb;
+  }
 
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
+  .left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+  }
 
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    }
+  .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: #2d6cff;
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.6);
+    flex: 0 0 auto;
+  }
 
-    /* ===== Header ===== */
-    #chat-header {
-      height: var(--header-h);
-      background: var(--brand);
-      color: #fff;
-      padding: 0 10px;
+  .title-wrap { min-width:0; }
+  .title {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.4px;
+    color: #0f172a;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #4b5563;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-      display: flex;
-      align-items: center;
-      gap: 8px;
+  .brand {
+    background: #d7e6ff;
+    color: #0b3aa5;
+    font-weight: 900;
+    font-size: 18px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid #c6dbff;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
 
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-      flex: 0 0 auto;
-    }
+  /* Body */
+  .guide-body {
+    padding: 12px 14px;
+    background: #f7f9fd;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    #chat-header .tag {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.22);
-    }
+  .row {
+    background: #ffffff;
+    border: 1px solid #e6edf7;
+    border-radius: 18px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
 
-    /* ===== Messages ===== */
-    #chat-messages {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      padding: 8px;
-      background: var(--panel);
+  .num {
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+    background: #eaf2ff;
+    border: 1px solid #cfe0ff;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    font-size: 20px;
+    color: #1d4ed8;
+    flex: 0 0 auto;
+  }
 
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+  .text {
+    font-size: 17px;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    white-space: normal; /* 좁으면 줄바꿈 */
+  }
 
-    .message {
-      max-width: 92%;
-      padding: 7px 9px;
-      border-radius: 10px;
-      font-size: 11px;
-      line-height: 1.35;
-      word-break: break-word;
-      white-space: pre-wrap;
-    }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 2px solid #d1d5db;
+    background: #ffffff;
+    font-weight: 900;
+    font-size: 15px;
+    margin: 0 6px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
 
-    .message.user {
-      align-self: flex-end;
-      background: var(--brand);
-      color: #fff;
-      border-bottom-right-radius: 6px;
-    }
+  .tip {
+    font-size: 13px;
+    font-weight: 800;
+    color: #6b7280;
+    margin-left: 6px;
+  }
 
-    .message.bot {
-      align-self: flex-start;
-      background: #fff;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-bottom-left-radius: 6px;
-    }
+  /* =========================
+     details(아코디언)
+     ========================= */
 
-    /* ===== Input ===== */
-    #chat-input-container {
-      height: var(--input-h);
-      flex: 0 0 auto;
+  details.guide-details{
+    background: #ffffff;
+    border: 1px solid #e6edf7;
+    border-radius: 18px;
+    overflow: hidden;
+  }
 
-      display: flex;
-      align-items: center;
-      gap: 8px;
+  details.guide-details summary{
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
 
-      padding: 8px;
-      border-top: 1px solid var(--border);
-      background: #fff;
-    }
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  details.guide-details summary::-webkit-details-marker{ display:none; }
 
-    #chat-input {
-      flex: 1 1 auto;
-      min-width: 0;
+  .summary-title{
+    font-size: 18px;
+    font-weight: 900;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.2px;
+  }
 
-      height: 100%;
-      padding: 0 10px;
+  .drop{
+    width: 46px;
+    height: 46px;
+    border-radius: 999px;
+    border: 2px solid #e5e7eb;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    color: #111827;
+    flex: 0 0 auto;
+    transition: transform .18s ease;
+    background: #fff;
+  }
 
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      font-size: 12px;
-      outline: none;
-      background: #fff;
-    }
-    #chat-input:focus { border-color: var(--brand); }
+  /* open 상태에서 화살표 회전 */
+  details.guide-details[open] .drop{
+    transform: rotate(180deg);
+  }
 
-    #send-button {
-      flex: 0 0 auto;
-      height: 100%;
-      padding: 0 12px;
+  .detailBody{
+    border-top: 1px solid #eef2f8;
+    padding: 12px 14px 14px 14px;
+    background: #ffffff;
+  }
 
-      background: var(--brand);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
+  .examples{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 8px;
+  }
 
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    #send-button:disabled {
-      background: #cbd5e1;
-      cursor: not-allowed;
-    }
+  /* =====================================================
+     컨테이너 쿼리: 노션 왼쪽 패널처럼 좁아질 때 자동 축소
+     ===================================================== */
 
-    /* ===== Typing ===== */
-    .message.typing {
-      background: #fff;
-      border: 1px solid var(--border);
-      padding: 7px 9px;
-    }
-    .typing-indicator { display: flex; gap: 4px; align-items: center; }
-    .typing-indicator span {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--brand);
-      animation: typing 1.2s infinite;
-      opacity: 0.5;
-    }
-    .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+  @container (max-width: 520px) {
+    .guide-header { padding: 10px 12px; }
+    .title { font-size: 18px; }
+    .subtitle { font-size: 12px; }
+    .brand { font-size: 16px; padding: 9px 14px; }
 
-    @keyframes typing {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
-      30% { transform: translateY(-3px); opacity: 1; }
-    }
+    .text { font-size: 15px; }
+    .pill { font-size: 13px; padding: 5px 10px; }
 
-    /* ===== Scrollbar (compact) ===== */
-    #chat-messages::-webkit-scrollbar { width: 6px; }
-    #chat-messages::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 8px; }
+    .summary-title{ font-size: 16px; }
+  }
 
-    @media (max-width: 380px) {
-      :root{
-        --widget-h: 155px;
-        --input-h: 42px;
-      }
-      .message { font-size: 10.8px; }
-    }
-  </style>
+  @container (max-width: 420px) {
+    .guide-header { padding: 9px 10px; gap: 8px; }
+    .dot { width: 14px; height: 14px; }
+    .title { font-size: 16px; }
+    .subtitle { font-size: 11px; }
+    .brand { font-size: 14px; padding: 8px 12px; }
+
+    .guide-body { padding: 10px; gap: 8px; }
+    .row { padding: 10px; gap: 10px; border-radius: 16px; }
+    .num { width: 40px; height: 40px; font-size: 18px; }
+    .text { font-size: 14px; line-height: 1.2; }
+    .pill { font-size: 12px; padding: 4px 9px; margin: 0 4px; }
+    .tip { font-size: 12px; }
+
+    details.guide-details{ border-radius: 16px; }
+    details.guide-details summary{ padding: 10px; }
+    .summary-title{ font-size: 14px; }
+    .drop { width: 40px; height: 40px; }
+    .detailBody{ padding: 10px; }
+  }
+
+  @container (max-width: 340px) {
+    .brand { font-size: 12px; padding: 7px 10px; }
+    .title { font-size: 15px; }
+    .text { font-size: 13px; }
+    .pill { font-size: 11px; padding: 4px 8px; }
+    .summary-title{ font-size: 13px; }
+  }
+
+  /* fallback */
+  @media (max-width: 420px) {
+    .title { font-size: 16px; }
+    .brand { font-size: 14px; padding: 8px 12px; }
+    .text { font-size: 14px; }
+  }
+</style>
 </head>
 
 <body>
-  <div class="stage">
-    <div id="chat-container">
-      <div id="chat-header">💬 AI 도우미 <span class="tag">TeachChain</span></div>
-
-      <div id="chat-messages">
-        <div class="message bot">교안 관련 질문 도와드려요 🙂</div>
+  <div class="widget">
+    <div class="guide-card">
+      <div class="guide-header">
+        <div class="left">
+          <div class="dot"></div>
+          <div class="title-wrap">
+            <div class="title">챗봇 이용 방법</div>
+            <div class="subtitle">빠르게 찾고, 정확히 검색하는 법</div>
+          </div>
+        </div>
+        <div class="brand">TeachChain</div>
       </div>
 
-      <div id="chat-input-container">
-        <input type="text" id="chat-input" placeholder="질문..." autocomplete="off" />
-        <button id="send-button">전송</button>
+      <div class="guide-body">
+        <div class="row">
+          <div class="num">1</div>
+          <div class="text">
+            질문 입력 후 <span class="pill">Space</span>를 누르면 추천이 동작해요.
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="num">2</div>
+          <div class="text">
+            검색 팁 “클라우드 교안 있어?”처럼
+            <span class="pill">주제 + 교안</span>
+            <span class="tip">조합이 가장 정확해요.</span>
+          </div>
+        </div>
+
+        <details class="guide-details">
+          <summary>
+            <span class="summary-title">더 자세한 예시 보기</span>
+            <span class="drop" aria-hidden="true">▼</span>
+          </summary>
+          <div class="detailBody">
+            <div class="examples">
+              <span class="pill">Database 교안 있어?</span>
+              <span class="pill">Docker 교안</span>
+              <span class="pill">SQLD 문제</span>
+              <span class="pill">Python 예제</span>
+            </div>
+          </div>
+        </details>
       </div>
     </div>
   </div>
-
-  <script>
-    const N8N_WEBHOOK_URL = 'https://fragrant-pond-159b.chani7873.workers.dev/';
-
-    const messagesContainer = document.getElementById('chat-messages');
-    const chatInput = document.getElementById('chat-input');
-    const sendButton = document.getElementById('send-button');
-
-    function addMessage(text, isUser = false) {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-      messageDiv.textContent = text;
-      messagesContainer.appendChild(messageDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function showTypingIndicator() {
-      const typingDiv = document.createElement('div');
-      typingDiv.className = 'message typing';
-      typingDiv.id = 'typing-indicator';
-      typingDiv.innerHTML = `
-        <div class="typing-indicator">
-          <span></span><span></span><span></span>
-        </div>
-      `;
-      messagesContainer.appendChild(typingDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function hideTypingIndicator() {
-      const t = document.getElementById('typing-indicator');
-      if (t) t.remove();
-    }
-
-    async function readResponseSafely(response) {
-      const raw = await response.text();
-      if (!raw) return { raw: '', json: null };
-      try { return { raw, json: JSON.parse(raw) }; }
-      catch { return { raw, json: null }; }
-    }
-
-    function extractReplyFromText(s) {
-      if (!s) return '';
-      const m1 = s.match(/"reply"\s*:\s*"([^"]+)"/);
-      if (m1 && m1[1]) return m1[1];
-
-      const m2 = s.match(/```json[\s\S]*?"reply"\s*:\s*"([^"]+)"[\s\S]*?```/);
-      if (m2 && m2[1]) return m2[1];
-
-      const m3 = s.match(/reply'\s*:\s*'([^']+)'/);
-      if (m3 && m3[1]) return m3[1];
-
-      return '';
-    }
-
-    function extractBotReply(parsed) {
-      const j = parsed.json;
-
-      if (j && typeof j === 'object' && typeof j.reply === 'string' && j.reply.trim()) {
-        return j.reply.trim();
-      }
-
-      if (j && typeof j === 'object' && typeof j.output === 'string' && j.output.trim()) {
-        const extracted = extractReplyFromText(j.output);
-        return (extracted || j.output).trim();
-      }
-
-      if (j && typeof j === 'object') {
-        if (typeof j.message === 'string' && j.message.trim()) return j.message.trim();
-        if (typeof j.text === 'string' && j.text.trim()) return j.text.trim();
-      }
-
-      const extractedRaw = extractReplyFromText(parsed.raw);
-      if (extractedRaw) return extractedRaw.trim();
-
-      if (parsed.raw && parsed.raw.trim()) return parsed.raw.trim();
-      return '응답이 없습니다.';
-    }
-
-    async function sendMessage() {
-      const message = chatInput.value.trim();
-      if (!message) return;
-
-      addMessage(message, true);
-      chatInput.value = '';
-      sendButton.disabled = true;
-      showTypingIndicator();
-
-      try {
-        const response = await fetch(N8N_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message, timestamp: new Date().toISOString() })
-        });
-
-        const parsed = await readResponseSafely(response);
-        const botResponse = extractBotReply(parsed);
-
-        hideTypingIndicator();
-        addMessage(botResponse, false);
-
-      } catch (err) {
-        hideTypingIndicator();
-        addMessage('연결 오류', false);
-        console.error(err);
-      }
-
-      sendButton.disabled = false;
-      chatInput.focus();
-    }
-
-    sendButton.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-  </script>
 </body>
 </html>
